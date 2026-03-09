@@ -58,6 +58,8 @@ function FormularioContacto({ onAgregar }) {
       setEnviando(true);
       await onAgregar(form);
 
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       setForm({
         nombre: "",
         telefono: "",

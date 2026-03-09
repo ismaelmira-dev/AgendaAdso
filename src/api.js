@@ -1,43 +1,45 @@
-// Punto base de la API local (ajusta el puerto si usas otro)
-const API = "http://localhost:3002/contactos";
+// Archivo: src/api.js
+// Capa de acceso a datos de Agenda ADSO (llamados a la API REST).
 
-// GET: listar contactos
+// Importamos la URL base desde config.js
+import { API_BASE_URL } from "./config";
+
+// Función GET: listar contactos
 export async function listarContactos() {
-  const res = await fetch(API);
+  // Hacemos un GET a la URL base (lista de contactos)
+  const res = await fetch(API_BASE_URL);
 
-  if (!res.ok) {
-    throw new Error("Error al listar contactos");
-  }
+  // Si la respuesta no es correcta (código 4xx o 5xx), lanzamos un error
+  if (!res.ok) throw new Error("Error al listar contactos");
 
+  // Parseamos el JSON y lo retornamos (devuelve un array de contactos)
   return res.json();
 }
 
-// POST: crear contacto
+// Función POST: crear un nuevo contacto
 export async function crearContacto(data) {
-  const res = await fetch(API, {
+  // Hacemos un POST a la URL base con el objeto recibido
+  const res = await fetch(API_BASE_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
 
-  if (!res.ok) {
-    throw new Error("Error al crear el contacto");
-  }
+  // Validamos la respuesta
+  if (!res.ok) throw new Error("Error al crear el contacto");
 
+  // Devolvemos el contacto creado que regresa la API (incluye el id)
   return res.json();
 }
 
-// DELETE: eliminar contacto por id
+// Función DELETE: eliminar contacto por id
 export async function eliminarContactoPorId(id) {
-  const res = await fetch(`${API}/${id}`, {
-    method: "DELETE",
-  });
+  // Hacemos un DELETE a /contactos/:id usando la URL base
+  const res = await fetch(`${API_BASE_URL}/${id}`, { method: "DELETE" });
 
-  if (!res.ok) {
-    throw new Error("Error al eliminar el contacto");
-  }
+  // Validamos la respuesta
+  if (!res.ok) throw new Error("Error al eliminar el contacto");
 
+  // Devolvemos true indicando éxito
   return true;
 }
