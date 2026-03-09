@@ -1,0 +1,19 @@
+{
+  "contactos": [
+    {
+      "id": "b768",
+      "nombre": "Ismael Mira",
+      "telefono": "3203256363",
+      "correo": "wismichu545@gmail.com",
+      "etiqueta": "Developer"
+    },
+    {
+      "id": "c331",
+      "nombre": "Mariana Suarez",
+      "telefono": "3002327761",
+      "correo": "mariana.suarez@hotmail.com",
+      "etiqueta": "secretaria"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

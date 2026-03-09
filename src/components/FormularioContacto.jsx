@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 export default function FormularioContacto({ onAgregar }) {
+  // Estado del formulario como objeto único controlado
   const [form, setForm] = useState({
     nombre: "",
     telefono: "",
@@ -8,53 +9,96 @@ export default function FormularioContacto({ onAgregar }) {
     etiqueta: "",
   });
 
+  // onChange genérico
   const onChange = (e) => {
-    const { name, value } = e.target;
-    setForm((f) => ({ ...f, [name]: value }));
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
+  // onSubmit
   const onSubmit = (e) => {
     e.preventDefault();
+
+    // Validación mínima
     if (!form.nombre || !form.telefono || !form.correo) return;
+
     onAgregar(form);
-    setForm({ nombre: "", telefono: "", correo: "", etiqueta: "" });
+
+    // Resetear formulario
+    setForm({
+      nombre: "",
+      telefono: "",
+      correo: "",
+      etiqueta: "",
+    });
   };
 
   return (
-    <form className="form-contacto" onSubmit={onSubmit}>
-      <label>Nombre *</label>
-      <input
-        name="nombre"
-        value={form.nombre}
-        onChange={onChange}
-        placeholder="Ej: Ana López"
-      />
+    <form onSubmit={onSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Nombre */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Nombre *
+          </label>
+          <input
+            className="w-full rounded-xl border-gray-300 focus:ring-purple-500 focus:border-purple-500"
+            name="nombre"
+            placeholder="Ej: Camila Pérez"
+            value={form.nombre}
+            onChange={onChange}
+          />
+        </div>
 
-      <label>Teléfono *</label>
-      <input
-        name="telefono"
-        value={form.telefono}
-        onChange={onChange}
-        placeholder="Ej: 300 123 4567"
-      />
+        {/* Teléfono */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Teléfono *
+          </label>
+          <input
+            className="w-full rounded-xl border-gray-300 focus:ring-purple-500 focus:border-purple-500"
+            name="telefono"
+            placeholder="Ej: 300 123 4567"
+            value={form.telefono}
+            onChange={onChange}
+          />
+        </div>
+      </div>
 
-      <label>Correo *</label>
-      <input
-        name="correo"
-        value={form.correo}
-        onChange={onChange}
-        placeholder="Ej: ana@sena.edu.co"
-      />
+      {/* Correo */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Correo *
+        </label>
+        <input
+          className="w-full rounded-xl border-gray-300 focus:ring-purple-500 focus:border-purple-500"
+          name="correo"
+          placeholder="Ej: camila@sena.edu.co"
+          value={form.correo}
+          onChange={onChange}
+        />
+      </div>
 
-      <label>Etiqueta (opcional)</label>
-      <input
-        name="etiqueta"
-        value={form.etiqueta}
-        onChange={onChange}
-        placeholder="Ej: Trabajo"
-      />
+      {/* Etiqueta */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Etiqueta (opcional)
+        </label>
+        <input
+          className="w-full rounded-xl border-gray-300 focus:ring-purple-500 focus:border-purple-500"
+          name="etiqueta"
+          placeholder="Ej: Trabajo"
+          value={form.etiqueta}
+          onChange={onChange}
+        />
+      </div>
 
-      <button className="btn-primario">Agregar contacto</button>
+      {/* Botón */}
+      <button className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-sm">
+        Agregar contacto
+      </button>
     </form>
   );
 }
