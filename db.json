@@ -13,6 +13,13 @@
       "telefono": "3002327761",
       "correo": "mariana.suarez@gmail.com",
       "etiqueta": "secretaria"
+    },
+    {
+      "id": "63ba",
+      "nombre": "Angie Velasquez",
+      "telefono": "3018704249",
+      "correo": "angie.caro@gmail.com",
+      "etiqueta": "Veterinaria"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -11,7 +11,7 @@ export const APP_INFO = {
   ficha: "3229209",
 
   // Título principal de la aplicación
-  titulo: "Agenda ADSO v9",
+  titulo: "Agenda ADSO v10",
 
   // Subtítulo o descripción corta que aparece debajo del título
   subtitulo:
