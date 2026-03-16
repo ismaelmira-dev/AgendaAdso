@@ -1,64 +1,65 @@
-// Archivo: src/App.jsx
-// Componente principal de la aplicación Agenda ADSO.
-
 import { useEffect, useState } from "react";
 
-// Importamos las funciones de la API
 import {
   listarContactos,
   crearContacto,
   eliminarContactoPorId,
 } from "./api";
 
-// Importamos la configuración global
 import { APP_INFO } from "./config";
 
-// Importamos componentes
 import FormularioContacto from "./components/FormularioContacto";
 import ContactoCard from "./components/ContactoCard";
 
 function App() {
-  // Estado de contactos
+
   const [contactos, setContactos] = useState([]);
-
-  // Estado de carga
   const [cargando, setCargando] = useState(true);
-
-  // Estado de error
   const [error, setError] = useState("");
 
-  // Cargar contactos al iniciar la app
+  // CLASE 10: Estados para búsqueda y ordenamiento
+  const [busqueda, setBusqueda] = useState("");
+  const [ordenAsc, setOrdenAsc] = useState(true);
+
   useEffect(() => {
+
     const cargarContactos = async () => {
       try {
+
         setCargando(true);
         setError("");
 
         const data = await listarContactos();
         setContactos(data);
+
       } catch (error) {
+
         console.error("Error al cargar contactos:", error);
 
         setError(
           "No se pudieron cargar los contactos. Verifica que el servidor esté encendido e intenta de nuevo."
         );
+
       } finally {
         setCargando(false);
       }
     };
 
     cargarContactos();
+
   }, []);
 
-  // Agregar contacto
   const onAgregarContacto = async (nuevoContacto) => {
     try {
+
       setError("");
 
       const creado = await crearContacto(nuevoContacto);
 
       setContactos((prev) => [...prev, creado]);
+
     } catch (error) {
+
       console.error("Error al crear contacto:", error);
 
       setError(
@@ -69,15 +70,16 @@ function App() {
     }
   };
 
-  // Eliminar contacto
   const onEliminarContacto = async (id) => {
     try {
-      setError("");
 
+      setError("");
       await eliminarContactoPorId(id);
 
       setContactos((prev) => prev.filter((c) => c.id !== id));
+
     } catch (error) {
+
       console.error("Error al eliminar contacto:", error);
 
       setError(
@@ -86,11 +88,38 @@ function App() {
     }
   };
 
+  // CLASE 10: Primera transformación — filtrar por término de búsqueda
+  const contactosFiltrados = contactos.filter((c) => {
+    const termino = busqueda.toLowerCase();
+
+    const nombre   = c.nombre.toLowerCase();
+    const correo   = c.correo.toLowerCase();
+    const etiqueta = (c.etiqueta || "").toLowerCase();
+    const telefono = (c.telefono || "").toLowerCase(); // Mini reto 1
+
+    return (
+      nombre.includes(termino) ||
+      correo.includes(termino) ||
+      etiqueta.includes(termino) ||
+      telefono.includes(termino) // Mini reto 1
+    );
+  });
+
+  // CLASE 10: Segunda transformación — ordenar alfabéticamente
+  const contactosOrdenados = [...contactosFiltrados].sort((a, b) => {
+    const nombreA = a.nombre.toLowerCase();
+    const nombreB = b.nombre.toLowerCase();
+
+    if (nombreA < nombreB) return ordenAsc ? -1 : 1;
+    if (nombreA > nombreB) return ordenAsc ? 1 : -1;
+    return 0;
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
+
       <div className="max-w-4xl mx-auto px-4 py-8">
 
-        {/* Header */}
         <header className="mb-8">
           <p className="text-xs tracking-[0.3em] text-gray-500 uppercase">
             Desarrollo Web ReactJS Ficha {APP_INFO.ficha}
@@ -105,29 +134,51 @@ function App() {
           </p>
         </header>
 
-        {/* Error global */}
         {error && (
           <div className="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3">
             <p className="text-sm font-medium text-red-700">{error}</p>
           </div>
         )}
 
-        {/* Estado de carga */}
         {cargando ? (
           <p className="text-sm text-gray-500">Cargando contactos...</p>
         ) : (
           <>
-            {/* Formulario */}
             <FormularioContacto onAgregar={onAgregarContacto} />
 
-            {/* Lista de contactos */}
+            {/*  CLASE 10: Buscador y botón de ordenamiento */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+              <input
+                type="text"
+                className="w-full md:flex-1 rounded-xl border-gray-300 focus:ring-purple-500 focus:border-purple-500 text-sm"
+                placeholder="Buscar por nombre, correo, etiqueta o teléfono..."
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+              />
+
+              <button
+                type="button"
+                onClick={() => setOrdenAsc((prev) => !prev)}
+                className="bg-gray-100 text-gray-700 text-sm px-4 py-2 rounded-xl border border-gray-200 hover:bg-gray-200"
+              >
+                {ordenAsc ? "Ordenar Z-A" : "Ordenar A-Z"}
+              </button>
+            </div>
+
+            {/*  CLASE 10: Mini reto 2 — contador de resultados */}
+            <p className="text-xs text-gray-400 mb-3">
+              Mostrando {contactosOrdenados.length}{" "}
+              {contactosOrdenados.length === 1 ? "contacto" : "contactos"}
+            </p>
+
+            {/*  CLASE 10: Renderizado con lista filtrada y ordenada */}
             <section className="space-y-4">
-              {contactos.length === 0 ? (
+              {contactosOrdenados.length === 0 ? (
                 <p className="text-sm text-gray-500">
-                  Aún no tienes contactos registrados. Agrega el primero usando el formulario superior.
+                  No se encontraron contactos que coincidan con la búsqueda.
                 </p>
               ) : (
-                contactos.map((c) => (
+                contactosOrdenados.map((c) => (
                   <ContactoCard
                     key={c.id}
                     nombre={c.nombre}
@@ -142,7 +193,6 @@ function App() {
           </>
         )}
 
-        {/* Footer */}
         <footer className="mt-8 text-xs text-gray-400">
           <p>Desarrollo Web – ReactJS | Proyecto Agenda ADSO</p>
           <p>Instructor: Gustavo Adolfo Bolaños Dorado</p>
