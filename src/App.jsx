@@ -15,7 +15,7 @@ import { APP_INFO } from "./config";
 import FormularioContacto from "./components/FormularioContacto";
 import ContactoCard from "./components/ContactoCard";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
+import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
 
