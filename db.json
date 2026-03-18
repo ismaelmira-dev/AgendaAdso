@@ -21,6 +21,5 @@
       "correo": "angie.caro@gmail.com",
       "etiqueta": "Veterinaria"
     }
-  ],
-  "$schema": "./node_modules/json-server/schema.json"
+  ]
 }
